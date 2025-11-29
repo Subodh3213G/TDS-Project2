@@ -1,5 +1,5 @@
 ---
-title: LLM Analysis Quiz Solver
+title: TDS2
 emoji: 🏃
 colorFrom: red
 colorTo: blue
@@ -384,7 +384,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-**Author**: Sai Vijay Ragav 
+**Author**: Yadav Subodh Upendra 
 **Course**: Tools in Data Science (TDS)
 **Institution**: IIT Madras
 
