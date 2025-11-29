@@ -388,4 +388,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 **Course**: Tools in Data Science (TDS)
 **Institution**: IIT Madras
 
-For questions or issues, please open an issue on the [GitHub repository](https://github.com/saivijayragav/LLM-Analysis-TDS-Project-2).
+For questions or issues, please open an issue on the [GitHub repository]().
