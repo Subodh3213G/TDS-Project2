@@ -1,30 +1,33 @@
-# Use the official Playwright Python image
-FROM mcr.microsoft.com/playwright/python:v1.44.0-jammy
+FROM python:3.10-slim
 
-# The base image already has a user 1000. We do NOT need to create one.
+# --- System deps required by Playwright browsers ---
+RUN apt-get update && apt-get install -y \
+    wget gnupg ca-certificates curl unzip \
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon0 \
+    libgtk-3-0 libgbm1 libasound2 libxcomposite1 libxdamage1 libxrandr2 \
+    libxfixes3 libpango-1.0-0 libcairo2 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# --- Install Playwright + Chromium ---
+RUN pip install playwright && playwright install --with-deps chromium
+
+# --- Install uv package manager ---
+RUN pip install uv
+
+# --- Copy app to container ---
 WORKDIR /app
 
-# Copy requirements first. We use '1000:1000' to assign ownership to the existing non-root user.
-COPY --chown=1000:1000 requirements.txt /app/requirements.txt
+COPY . .
 
-# Install dependencies
-# (Pip installs run as root here so they are available globally, which is fine)
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONIOENCODING=utf-8
 
-# Install Chromium
-RUN playwright install chromium
+# --- Install project dependencies using uv ---
+RUN uv sync --frozen
 
-# Copy the rest of the application code with correct ownership
-COPY --chown=1000:1000 . /app
-
-# Switch to the existing non-root user (UID 1000)
-USER 1000
-
-# Expose the HF specific port
+# HuggingFace Spaces exposes port 7860
 EXPOSE 7860
 
-# Run the app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
+# --- Run your FastAPI app ---
+# uvicorn must be in pyproject dependencies
+CMD ["uv", "run", "main.py"]
